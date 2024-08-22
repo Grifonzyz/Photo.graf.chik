@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photographer's Portfolio</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #000;
+            color: #fff;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        header {
+            position: fixed;
+            width: 100%;
+            top: 0;
+            background-color: rgba(0, 0, 0, 0.9);
+            padding: 20px 0;
+            z-index: 1000;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        nav ul li {
+            margin: 0 20px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            color: #f39c12;
+        }
+
+        .section {
+            padding: 120px 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease, transform 1s ease;
+        }
+
+        .section.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            max-width: 800px;
+            margin: 0 auto 20px;
+        }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding-top: 40px;
+        }
+
+        .portfolio-item {
+            overflow: hidden;
+            border-radius: 10px;
+            transition: transform 0.4s ease;
+        }
+
+        .portfolio-item:hover {
+            transform: scale(1.05);
+        }
+
+        .portfolio-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .portfolio-item img:hover {
+            transform: scale(1.1);
+        }
+
+        .services-list {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: left;
+            padding-top: 20px;
+        }
+
+        .services-list h3 {
+            font-size: 2rem;
+            color: #f39c12;
+            margin-bottom: 10px;
+        }
+        .services-list h4 {
+            font-size: 1rem;
+            color: #ffffff;
+            margin-bottom: 30px;
+        }
+
+        .services-list p {
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        footer {
+            padding: 20px;
+            text-align: center;
+            background-color: #111;
+        }
+
+        footer p {
+            margin: 5px;
+            color: #777;
+        }
+        /* Fullscreen modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            position: relative;
+            width: 80%;
+            height: 80%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content img {
+            max-width: 70%;
+            max-height: 100%;
+            object-fit: contain;
+            margin-right: 20px;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 2rem;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .thumbnail-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: 15%;
+    max-height: 100%;
+    margin: auto 0; /* Центрирует миниатюры по вертикали */
+    overflow-y: auto;
+    padding: 10px 0; /* Небольшие отступы сверху и снизу */
+    box-sizing: border-box;
+}
+
+/* Стили для полосы прокрутки */
+.thumbnail-list::-webkit-scrollbar {
+    width: 5px;
+}
+
+.thumbnail-list::-webkit-scrollbar-thumb {
+    background-color: #444;
+    border-radius: 5px;
+}
+
+        .thumbnail-list img {
+            width: 100%;
+            aspect-ratio: 1 / 1; /* Делаем изображения квадратными */
+            object-fit: cover;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .thumbnail-list img:hover {
+            transform: scale(1.1);
+        }
+
+        /* Стили для полосы прокрутки */
+        .thumbnail-list::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .thumbnail-list::-webkit-scrollbar-thumb {
+            background-color: #444;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="#portfolio">Portfolio</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#about">About Me</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="portfolio" class="section">
+        <div>
+            <h1>Portfolio</h1>
+            <p>I am the Time Lord, capable of stopping the world with a single press of a button, capturing it in all its beauty and preserving the most vivid and beautiful emotions</p>
+            <div class="portfolio-grid">
+                <div class="portfolio-item">
+                    <img src="img/session1_photo1.jpg" alt="Session 1" onclick="openModal(1)">
+                </div>
+                <div class="portfolio-item">
+                    <img src="img/session2_photo1.jpg" alt="Session 2" onclick="openModal(2)">
+                </div>
+                <div class="portfolio-item">
+                    <img src="img/session3_photo1.jpg" alt="Session 3" onclick="openModal(3)">
+                </div>
+                <div class="portfolio-item">
+                    <img src="img/session4_photo1.jpg" alt="Session 4" onclick="openModal(4)">
+                </div>
+                <div class="portfolio-item">
+                    <img src="img/session5_photo1.jpg" alt="Session 5" onclick="openModal(5)">
+                </div>
+                <div class="portfolio-item">
+                    <img src="img/session6_photo1.jpg" alt="Session 6" onclick="openModal(6)">
+                </div>
+                <div class="portfolio-item">
+                    <img src="img/session7_photo1.jpg" alt="Session 7" onclick="openModal(7)">
+                </div>
+                <div class="portfolio-item">
+                    <img src="img/session8_photo1.jpg" alt="Session 8" onclick="openModal(8)">
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="services" class="section">
+        <div>
+            <h1>Services</h1>
+            <p>I work in the expansive field of photography and eagerly take on any interesting and creative projects, whether it's weddings, family events, or even intimate photos of your beautiful, youthful body.</p>
+            <div class="services-list">
+                <div>
+                    <h3>Wedding Photography</h3>
+                    <p>Capturing the magic of your special day with stunning images that will beautifully tell the story of your celebration, preserving every heartfelt moment and detail. These photographs will be cherished keepsakes, allowing you to relive the joy and emotion of your unforgettable day for years to come.</p>
+                    <h4>Price: from 70€ / hour. Min 3h</h4>
+                </div>
+                <div>
+                    <h3>Personal Photography</h3>
+                    <p>The most captivating and inventive style will help you distinguish yourself from the crowd, unveiling a fresh and unique perspective on who you are.</p>
+                    <h4>Price: from 50€ / hour. Min 2h</h4>
+                </div>
+                <div>
+                    <h3>Commercial Photography</h3>
+                    <p>High-quality images that showcase your brand and products in the best light, highlighting their unique features and elevating your business's visual identity.</p>
+                    </h4> Price: from 50€ / hour. Min 2h</h4>
+                </div>
+                <div>
+                    <h3>Event Photography</h3>
+                    <p>Documenting your events with a keen eye for detail, I ensure that every moment, from the smallest gesture to the grandest occasion, is captured with precision and care, preserving the essence and emotion of your special day.</p>
+                    </h4> Price: from 60€ / hour. Min 2h</h4>
+                </div>
+                <div>
+                    <h3>Intimate photography</h3>
+                    <p>This genre focuses on capturing private, personal, and often sensual moments. It emphasizes the subject's vulnerability, beauty, and emotional depth, creating images that are both artistic and deeply personal. The goal is to convey a sense of intimacy and connection, often through subtle lighting, close compositions, and a relaxed, comfortable environment.</p>
+                    </h4> Price: from 60€ / hour. Min 2h</h4>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="section">
+        <div>
+            <h1>About Me</h1>
+            <p>
+                I have over 7 years of experience in photography. During this time, I have completed numerous courses, mastering various techniques and styles, and even conducted my own workshops to share my knowledge with others. Thanks to my efforts, two exhibitions were organized, open to anyone who wished to participate. Over the years, I have developed my own unique photography style that allows me to create expressive and memorable images. My experience and passion for this art form enable me to bring the most daring and creative ideas to life.</p>
+            <p>I believe in the power of storytelling through photography, and my goal is to help you tell your story in the most compelling way possible.</p>
+        </div>
+    </section>
+
+    <section id="contact" class="section">
+        <div>
+            <h1>Contact</h1>
+            <p>If you'd like to work together or just want to say hello, feel free to get in touch. I look forward to hearing from you!</p>
+            <p>Email: <a href="https://mail.google.com/mail/u/0/#inbox?compose=DmwnWrRsnxBPbKcWhrLGTDzWQCPFZdqXgcQNlQBZzwphwRDsHkDkzmGltkHhSWsNKFMtFQDZxZRL" style="color: #f39c12;">Photo.graf.chik@gmail.com</a></p>
+            <p>Phone: <a href="+370 624 61 642" style="color: #f39c12;">+370 624 61 642</a></p>
+            <p>Inst: <a href="https://www.instagram.com/photo_graf_chik/?hl=en" style="color: #f39c12;">@Photo_graf_chik</a></p>
+            <p>Telegram: <a href="https://t.me/photografchik" style="color: #f39c12;">@Photografchik</a></p>
+            
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Photographer. All rights reserved.</p>
+    </footer>
+    <!-- Modal for fullscreen image -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <img id="modalImage" src="" alt="Fullscreen Image">
+            <div class="thumbnail-list" id="thumbnailList">
+                <!-- Миниатюры загружаются динамически -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const sections = document.querySelectorAll('.section');
+
+        window.addEventListener('scroll', checkSections);
+
+        function checkSections() {
+            const triggerBottom = window.innerHeight / 5 * 4;
+
+            sections.forEach(section => {
+                const sectionTop = section.getBoundingClientRect().top;
+
+                if(sectionTop < triggerBottom) {
+                    section.classList.add('active');
+                } else {
+                    section.classList.remove('active');
+                }
+            });
+        }
+
+        checkSections(); // Run on load
+
+        // Массивы фотографий для каждой сессии
+        const sessions = {
+            1: ["img/session1_photo1.jpg", "img/session1_photo2.jpg", "img/session1_photo3.jpg", "img/session1_photo4.jpg", "img/session1_photo5.jpg","img/session1_photo6.jpg","img/session1_photo7.jpg","img/session1_photo8.jpg","img/session1_photo9.jpg"],
+            2: ["img/session2_photo1.jpg", "img/session2_photo2.jpg", "img/session2_photo3.jpg", "img/session2_photo4.jpg", "img/session2_photo5.jpg", "img/session2_photo6.jpg"],
+            3: ["img/session3_photo1.jpg", "img/session3_photo2.jpg", "img/session3_photo3.jpg", "img/session3_photo4.jpg", "img/session3_photo5.jpg"],
+            4: ["img/session4_photo1.jpg", "img/session4_photo2.jpg", "img/session4_photo3.jpg", "img/session4_photo4.jpg", "img/session4_photo5.jpg"],
+            5: ["img/session5_photo1.jpg", "img/session5_photo2.jpg", "img/session5_photo3.jpg", "img/session5_photo4.jpg", "img/session5_photo5.jpg"],
+            6: ["img/session6_photo1.jpg", "img/session6_photo2.jpg", "img/session6_photo3.jpg", "img/session6_photo4.jpg", "img/session6_photo5.jpg"],
+            7: ["img/session7_photo1.jpg", "img/session7_photo2.jpg", "img/session7_photo3.jpg", "img/session7_photo4.jpg", "img/session7_photo5.jpg"],
+            8: ["img/session8_photo1.jpg", "img/session8_photo2.jpg", "img/session8_photo3.jpg", "img/session8_photo4.jpg", "img/session8_photo5.jpg"]
+        };
+
+        // Открыть модальное окно и загрузить изображения сессии
+        function openModal(sessionIndex) {
+            const modal = document.getElementById("myModal");
+            modal.style.display = "flex";
+
+            // Загрузка первой фотографии
+            changeImage(sessions[sessionIndex][0]);
+
+            // Загрузка миниатюр
+            const thumbnailList = document.getElementById("thumbnailList");
+            thumbnailList.innerHTML = ""; // Очистка миниатюр
+            sessions[sessionIndex].forEach((photo, index) => {
+                const img = document.createElement("img");
+                img.src = photo;
+                img.onclick = () => changeImage(photo);
+                thumbnailList.appendChild(img);
+            });
+        }
+
+        // Закрыть модальное окно
+        function closeModal() {
+            const modal = document.getElementById("myModal");
+            modal.style.display = "none";
+        }
+
+        // Сменить изображение в модальном окне
+        function changeImage(src) {
+            const modalImage = document.getElementById("modalImage");
+            modalImage.src = src;
+        }
+        
+    </script>
+</body>
+</html>
